@@ -41,6 +41,8 @@ class Slider extends React.Component {
     }
   }
 
+  isAddEnabled = () => false;
+
   componentDidMount() {
     const { autoFocus, disabled } = this.props;
     if (autoFocus && !disabled) {
