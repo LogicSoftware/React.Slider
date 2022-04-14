@@ -39387,6 +39387,8 @@ function createSlider(Component) {
           return;
         }
 
+        _this.removeAddModeDocumentMouseMoveEvents();
+
         _this.addAddModeDocumentMouseMoveEvents();
 
         _this.setState({
@@ -39480,6 +39482,7 @@ function createSlider(Component) {
       value: function removeAddModeDocumentMouseMoveEvents() {
         /* eslint-disable no-unused-expressions */
         this.onAddMouseMoveListener && this.onAddMouseMoveListener.remove();
+        this.onAddMouseMoveListener = null;
         /* eslint-enable no-unused-expressions */
       }
     }, {
@@ -39487,7 +39490,9 @@ function createSlider(Component) {
       value: function removeDocumentEvents() {
         /* eslint-disable no-unused-expressions */
         this.onMouseMoveListener && this.onMouseMoveListener.remove();
+        this.onMouseMoveListener = null;
         this.onMouseUpListener && this.onMouseUpListener.remove();
+        this.onMouseUpListener = null;
         /* eslint-enable no-unused-expressions */
       }
     }, {
