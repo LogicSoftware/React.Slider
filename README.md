@@ -140,6 +140,18 @@ npm install
 npm start
 ```
 
+## Deploy
+
+```
+npm run pub --otp=<code from Authenticator>
+```
+
+You need to be authenticated on NPM and use 2FA:
+
+```
+npm add user
+```
+
 ## Example
 
 `npm start` and then go to `http://localhost:8005/examples/`

@@ -161,6 +161,7 @@ export default function createSlider(Component) {
       if (!this.isAddEnabled()) {
         return;
       }
+      this.removeAddModeDocumentMouseMoveEvents();
       this.addAddModeDocumentMouseMoveEvents();
       this.setState({isHovered: true});
     }
@@ -207,13 +208,16 @@ export default function createSlider(Component) {
     removeAddModeDocumentMouseMoveEvents() {
       /* eslint-disable no-unused-expressions */
       this.onAddMouseMoveListener && this.onAddMouseMoveListener.remove();
+      this.onAddMouseMoveListener = null;
       /* eslint-enable no-unused-expressions */
     }
 
     removeDocumentEvents() {
       /* eslint-disable no-unused-expressions */
       this.onMouseMoveListener && this.onMouseMoveListener.remove();
+      this.onMouseMoveListener = null;
       this.onMouseUpListener && this.onMouseUpListener.remove();
+      this.onMouseUpListener = null;
       /* eslint-enable no-unused-expressions */
     }
 
