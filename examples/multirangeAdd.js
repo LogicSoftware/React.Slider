@@ -2,7 +2,7 @@
 import '@logicsoftware/slider/assets/index.less';
 
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import Slider from '@logicsoftware/slider';
 
 const Handle = Slider.Handle;
@@ -193,10 +193,10 @@ class PureRenderRange extends React.Component {
   }
 }
 
-ReactDOM.render(
+createRoot(document.getElementById('__react-content')).render(
   <div>
     <div style={style}>
       <PureRenderRange />
     </div>
   </div>
-  , document.getElementById('__react-content'));
+);

@@ -1,5 +1,6 @@
 /* eslint-disable max-len, no-undef */
 import React from 'react';
+import { act } from 'react-dom/test-utils';
 import { mount } from 'enzyme';
 import Slider, { Range } from '../../src';
 
@@ -140,13 +141,16 @@ describe('createSlider', () => {
       preventDefault() {},
     });
     expect(wrapper.instance().dragOffset).toBe(5);
-    wrapper.instance().onMouseMove({ // to propagation
-      type: 'mousemove',
-      target: leftHandle,
-      pageX: 14, button: 0,
-      stopPropagation() {},
-      preventDefault() {},
+    act(() => {
+      wrapper.instance().onMouseMove({ // to propagation
+        type: 'mousemove',
+        target: leftHandle,
+        pageX: 14, button: 0,
+        stopPropagation() {},
+        preventDefault() {},
+      });
     });
+    wrapper.update();
     expect(wrapper.instance().getValue()).toBe(9);
   });
 

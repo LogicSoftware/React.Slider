@@ -1,7 +1,7 @@
 import '@logicsoftware/slider/assets/index.less';
 
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import Slider from '@logicsoftware/slider';
 
 const style = { float: 'left', width: 160, height: 400, marginBottom: 160, marginLeft: 50 };
@@ -25,7 +25,7 @@ function log(value) {
   console.log(value); //eslint-disable-line
 }
 
-ReactDOM.render(
+createRoot(document.getElementById('__react-content')).render(
   <div style={parentStyle}>
     <div style={style}>
       <p>Slider with marks, `step=null`</p>
@@ -54,4 +54,4 @@ ReactDOM.render(
       />
     </div>
   </div>
-  , document.getElementById('__react-content'));
+);

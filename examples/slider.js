@@ -2,7 +2,7 @@
 import '@logicsoftware/slider/assets/index.less';
 
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import Slider, { createSliderWithTooltip } from '@logicsoftware/slider';
 
 const style = { width: 600, margin: 50 };
@@ -115,7 +115,7 @@ class DynamicBounds extends React.Component {
   }
 }
 
-ReactDOM.render(
+createRoot(document.getElementById('__react-content')).render(
   <div>
     <div style={style}>
       <p>Basic Slider</p>
@@ -194,4 +194,4 @@ ReactDOM.render(
       <DynamicBounds />
     </div>
   </div>
-  , document.getElementById('__react-content'));
+);

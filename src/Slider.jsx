@@ -28,6 +28,9 @@ class Slider extends React.Component {
     this.state = {
       value: this.trimAlignValue(value),
       dragging: false,
+      _prevValue: props.value,
+      _prevMin: props.min,
+      _prevMax: props.max,
     };
     if (utils.isDev()) {
       warning(
@@ -43,6 +46,32 @@ class Slider extends React.Component {
 
   isAddEnabled = () => false;
 
+  static getDerivedStateFromProps(props, state) {
+    if (
+      props.value === state._prevValue &&
+      props.min === state._prevMin &&
+      props.max === state._prevMax
+    ) {
+      return null;
+    }
+
+    const prevValue = state.value;
+    const value = props.value !== undefined ? props.value : prevValue;
+
+    let nextValue = prevValue;
+    if (value !== null) {
+      const val = utils.ensureValueInRange(value, props);
+      nextValue = utils.ensureValuePrecision(val, props);
+    }
+
+    return {
+      _prevValue: props.value,
+      _prevMin: props.min,
+      _prevMax: props.max,
+      ...(nextValue !== prevValue ? { value: nextValue } : {}),
+    };
+  }
+
   componentDidMount() {
     const { autoFocus, disabled } = this.props;
     if (autoFocus && !disabled) {
@@ -50,18 +79,20 @@ class Slider extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (!('value' in nextProps || 'min' in nextProps || 'max' in nextProps)) return;
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      this.props.value === prevProps.value &&
+      this.props.min === prevProps.min &&
+      this.props.max === prevProps.max
+    ) {
+      return;
+    }
 
-    const prevValue = this.state.value;
-    const value = nextProps.value !== undefined ?
-      nextProps.value : prevValue;
-    const nextValue = this.trimAlignValue(value, nextProps);
-    if (nextValue === prevValue) return;
-
-    this.setState({ value: nextValue });
-    if (utils.isValueOutOfRange(value, nextProps)) {
-      this.props.onChange(nextValue);
+    // Use prevState.value for uncontrolled case: getDerivedStateFromProps has already
+    // clamped this.state.value, so we must check the raw pre-update value.
+    const value = this.props.value !== undefined ? this.props.value : prevState.value;
+    if (utils.isValueOutOfRange(value, this.props)) {
+      this.props.onChange(this.trimAlignValue(value));
     }
   }
 
