@@ -1,7 +1,7 @@
 import '@logicsoftware/slider/assets/index.less';
 
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import Slider from '@logicsoftware/slider';
 
 const style = { width: 400, margin: 50 };
@@ -23,7 +23,7 @@ function log(value) {
   console.log(value); //eslint-disable-line
 }
 
-ReactDOM.render(
+createRoot(document.getElementById('__react-content')).render(
   <div>
     <div style={style}>
       <p>Slider with marks, `step=null`</p>
@@ -52,4 +52,4 @@ ReactDOM.render(
       <Slider.Range min={-10} marks={marks} step={10} onChange={log} defaultValue={[20, 40]} />
     </div>
   </div>
-  , document.getElementById('__react-content'));
+);

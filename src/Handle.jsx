@@ -69,6 +69,8 @@ export default class Handle extends React.Component {
       untabbable,
       disabledKeyboard,
       dragging,
+      onFocus,
+      onBlur: onBlurProp,
       ...restProps
     } = this.props;
 
@@ -90,7 +92,8 @@ export default class Handle extends React.Component {
         dragging={dragging ? dragging.toString() : ""}
         className={className}
         style={elStyle}
-        onBlur={this.handleBlur}
+        onFocus={onFocus}
+        onBlur={(e) => { this.handleBlur(e); if (onBlurProp) onBlurProp(e); }}
         onKeyDown={disabledKeyboard ? null : this.handleKeyDown}
 
         // aria attribute

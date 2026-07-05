@@ -1,4 +1,3 @@
-import { findDOMNode } from 'react-dom';
 import keyCode from 'rc-util/lib/KeyCode';
 
 export function isDev() {
@@ -8,7 +7,7 @@ export function isDev() {
 export function isEventFromHandle(e, handles) {
   try {
     return Object.keys(handles)
-      .some(key => e.target === findDOMNode(handles[key]));
+      .some(key => handles[key] && e.target === handles[key].handle);
   } catch(error) {
     return false;
   }
@@ -17,7 +16,7 @@ export function isEventFromHandle(e, handles) {
 export function getHandleInfo(e, handles, disabledHandles) {
   try {
     const handlesFromObj = Object.keys(handles).map(k => handles[k]);
-    const handle = handlesFromObj.find(h => e.target === findDOMNode(h));
+    const handle = handlesFromObj.find(h => h && e.target === h.handle);
     
     return {
       isEventFromHandle : !!handle ? true: false,

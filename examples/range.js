@@ -2,7 +2,7 @@
 import '@logicsoftware/slider/assets/index.less';
 
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import Slider from '@logicsoftware/slider';
 
 const Range = Slider.Range;
@@ -157,7 +157,7 @@ class PureRenderRange extends React.Component {
   }
 }
 
-ReactDOM.render(
+createRoot(document.getElementById('__react-content')).render(
   <div>
     <div style={style}>
       <p>Basic Range，`allowCross=false`</p>
@@ -212,4 +212,4 @@ ReactDOM.render(
       <PureRenderRange />
     </div>
   </div>
-  , document.getElementById('__react-content'));
+);

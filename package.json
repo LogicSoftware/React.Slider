@@ -1,6 +1,6 @@
 {
   "name": "@logicsoftware/slider",
-  "version": "8.6.20",
+  "version": "9.0.0",
   "description": "Slider UI component for React",
   "keywords": [
     "react",
@@ -50,6 +50,7 @@
     "coverage": "jest --coverage"
   },
   "jest": {
+    "testEnvironment": "jsdom",
     "setupFiles": [
       "./tests/setup.js"
     ],
@@ -64,17 +65,22 @@
       "\\.jsx?$": "./node_modules/rc-tools/scripts/jestPreprocessor.js"
     }
   },
+  "peerDependencies": {
+    "react": "^16.0.0 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.0.0 || ^17.0.0 || ^18.0.0"
+  },
   "devDependencies": {
+    "@cfaester/enzyme-adapter-react-18": "^0.8.0",
     "enzyme": "^3.0.0",
-    "enzyme-adapter-react-16": "^1.0.1",
     "enzyme-to-json": "^3.0.0",
-    "jest": "^20.0.0",
+    "jest": "^27.5.1",
+    "jest-environment-jsdom": "^27.5.1",
     "pre-commit": "1.x",
     "rc-tools": "9.x",
     "rc-trigger": "^2.2.0",
-    "react": "^16.0.0",
-    "react-dom": "^16.0.0",
-    "react-test-renderer": "^16.0.0"
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-test-renderer": "^18.0.0"
   },
   "dependencies": {
     "babel-runtime": "6.x",

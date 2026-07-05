@@ -98,6 +98,37 @@ export default function createSlider(Component) {
       this.removeDocumentEvents();
     }
 
+    onTouchStart = (e) => {
+      if (utils.isNotTouchEvent(e)) return;
+
+      const { isEventFromHandle, isDisabledHandle } = utils.getHandleInfo(e, this.handlesRefs, this.props.disabledHandles);
+
+      if (this.props.isTrackDisabled && (!isEventFromHandle && !this.state.addMode) || isDisabledHandle) { return; }
+
+      const isVertical = this.props.vertical;
+      let position = utils.getTouchPosition(isVertical, e);
+      if (!isEventFromHandle) {
+        this.dragOffset = 0;
+      } else {
+        const handlePosition = utils.getHandleCenterPosition(isVertical, e.target);
+        this.dragOffset = position - handlePosition;
+        position = handlePosition;
+      }
+      this.removeDocumentEvents();
+      this.onStart(position);
+      this.addDocumentTouchEvents();
+      utils.pauseEvent(e);
+    }
+
+    onTouchMove = (e) => {
+      if (utils.isNotTouchEvent(e) || !this.sliderRef) {
+        this.onEnd();
+        return;
+      }
+      const position = utils.getTouchPosition(this.props.vertical, e);
+      this.onMove(e, position - this.dragOffset);
+    }
+
     onMouseDown = (e) => {
       if (e.button !== 0) { return; }
       const {isEventFromHandle, isDisabledHandle} = utils.getHandleInfo(e, this.handlesRefs, this.props.disabledHandles);
@@ -196,6 +227,11 @@ export default function createSlider(Component) {
       const coords = slider.getBoundingClientRect();
       return this.props.vertical ? coords.height : coords.width;
     }
+    addDocumentTouchEvents() {
+      this.onTouchMoveListener = addEventListener(this.document, 'touchmove', this.onTouchMove);
+      this.onTouchUpListener = addEventListener(this.document, 'touchend', this.onEnd);
+    }
+
     addAddModeDocumentMouseMoveEvents() {
       this.onAddMouseMoveListener = addEventListener(this.document, 'mousemove', this.onAddModeMouseMove);
     }
@@ -218,6 +254,10 @@ export default function createSlider(Component) {
       this.onMouseMoveListener = null;
       this.onMouseUpListener && this.onMouseUpListener.remove();
       this.onMouseUpListener = null;
+      this.onTouchMoveListener && this.onTouchMoveListener.remove();
+      this.onTouchMoveListener = null;
+      this.onTouchUpListener && this.onTouchUpListener.remove();
+      this.onTouchUpListener = null;
       /* eslint-enable no-unused-expressions */
     }
 
@@ -297,6 +337,7 @@ export default function createSlider(Component) {
           className={sliderClassName}
           onMouseDown={disabled ? noop : this.onMouseDown}
           onMouseUp={disabled ? noop : this.onMouseUp}
+          onTouchStart={disabled ? noop : this.onTouchStart}
           onKeyDown={disabled ? noop : this.onKeyDown}
           onMouseEnter={disabled ? noop : this.onMouseEnter}
           onMouseLeave={disabled ? noop : this.onMouseLeave}

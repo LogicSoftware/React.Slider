@@ -52,34 +52,78 @@ class Range extends React.Component {
       addMode: this.isAddEnabled(),
       addBound: null,
       currentlyDragging: false,
+      _prevValue: props.value,
+      _prevMin: props.min,
+      _prevMax: props.max,
     };
   }
   isAddEnabled = () => this.props.addHandle && this.props.onAdd;
 
-  componentWillReceiveProps(nextProps) {
-    if (!('value' in nextProps || 'min' in nextProps || 'max' in nextProps)) return;
-    if (this.props.min === nextProps.min &&
-        this.props.max === nextProps.max &&
-        shallowEqual(this.props.value, nextProps.value)) {
+  static getDerivedStateFromProps(props, state) {
+    if (
+      state._prevMin === props.min &&
+      state._prevMax === props.max &&
+      shallowEqual(state._prevValue, props.value)
+    ) {
+      return null;
+    }
+
+    const { bounds } = state;
+    const value = props.value || bounds;
+    const update = {
+      _prevValue: props.value,
+      _prevMin: props.min,
+      _prevMax: props.max,
+    };
+
+    if (bounds.length !== value.length) {
+      return { ...update, bounds: value };
+    }
+
+    const nextBounds = value.map((v, handle) => {
+      const valInRange = utils.ensureValueInRange(v, props);
+      const valNotConflict = Range._ensureValueNotConflict(handle, valInRange, props, state);
+      return utils.ensureValuePrecision(valNotConflict, props);
+    });
+
+    if (nextBounds.every((v, i) => v === bounds[i])) {
+      return update;
+    }
+
+    return { ...update, bounds: nextBounds };
+  }
+
+  static _ensureValueNotConflict(handle, val, { allowCross, pushable: thershold }, state) {
+    const { bounds } = state;
+    const activeHandle = handle === undefined ? state.handle : handle;
+    thershold = Number(thershold);
+    /* eslint-disable eqeqeq */
+    if (!allowCross && activeHandle != null && bounds !== undefined) {
+      if (activeHandle > 0 && val <= (bounds[activeHandle - 1] + thershold)) {
+        return bounds[activeHandle - 1] + thershold;
+      }
+      if (activeHandle < bounds.length - 1 && val >= (bounds[activeHandle + 1] - thershold)) {
+        return bounds[activeHandle + 1] - thershold;
+      }
+    }
+    /* eslint-enable eqeqeq */
+    return val;
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      this.props.min === prevProps.min &&
+      this.props.max === prevProps.max &&
+      shallowEqual(this.props.value, prevProps.value)
+    ) {
       return;
     }
 
-    const { bounds } = this.state;
-    const value = nextProps.value || bounds;
-    if(bounds.length !== value.length) {
-      this.setState({ bounds: value });
-      return;  
-    }
-
-    const nextBounds = value.map((v, i) => this.trimAlignValue(v, i, nextProps));
-    if (nextBounds.length === bounds.length && nextBounds.every((v, i) => v === bounds[i])) return;
-
-    this.setState({ bounds: nextBounds });
-
-    if (value.some(v => utils.isValueOutOfRange(v, nextProps))) {
-      const newValues = value.map((v) => {
-        return utils.ensureValueInRange(v, nextProps);
-      });
+    // Use prevState.bounds for uncontrolled case: getDerivedStateFromProps has already
+    // clamped this.state.bounds, so we must check the raw pre-update values.
+    const value = this.props.value || prevState.bounds;
+    if (value.some(v => utils.isValueOutOfRange(v, this.props))) {
+      const newValues = value.map(v => utils.ensureValueInRange(v, this.props));
       this.props.onChange(newValues);
     }
   }
@@ -351,6 +395,8 @@ class Range extends React.Component {
       handleStyle,
       tabIndex,
       disabledHandles,
+      onFocus,
+      onBlur,
     } = this.props;
 
     const offsets = bounds.map(v => this.calcOffset(v));
@@ -378,7 +424,8 @@ class Range extends React.Component {
       disabled,
       disabledHandle: disabledHandles.indexOf(v) !== -1 ? true : false,
       style: handleStyle[i],
-      
+      onFocus,
+      onBlur,
       ref: h => this.saveHandle(i, h),
     }));
 
