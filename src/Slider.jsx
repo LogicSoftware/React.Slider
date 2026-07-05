@@ -189,6 +189,8 @@ class Slider extends React.Component {
       min,
       max,
       handle: handleGenerator,
+      onFocus,
+      onBlur,
     } = this.props;
     const { value, dragging } = this.state;
     const offset = this.calcOffset(value);
@@ -205,6 +207,8 @@ class Slider extends React.Component {
       index: 0,
       tabIndex,
       style: handleStyle[0] || handleStyle,
+      onFocus,
+      onBlur,
       ref: h => this.saveHandle(0, h),
     });
 

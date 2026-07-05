@@ -395,6 +395,8 @@ class Range extends React.Component {
       handleStyle,
       tabIndex,
       disabledHandles,
+      onFocus,
+      onBlur,
     } = this.props;
 
     const offsets = bounds.map(v => this.calcOffset(v));
@@ -422,7 +424,8 @@ class Range extends React.Component {
       disabled,
       disabledHandle: disabledHandles.indexOf(v) !== -1 ? true : false,
       style: handleStyle[i],
-      
+      onFocus,
+      onBlur,
       ref: h => this.saveHandle(i, h),
     }));
 
